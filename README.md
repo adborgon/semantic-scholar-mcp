@@ -1,5 +1,8 @@
 # Semantic Scholar MCP Server
 
+> **Note:** A lightweight CLI alternative is available at [`semantic-scholar-cli`](https://github.com/FujishigeTemma/semantic-scholar-cli).
+> It is designed for LLM tool-use workflows with strict typed inputs, stable JSON envelopes, and small default payloads — usable without an MCP server.
+
 A Model Context Protocol (MCP) server that provides access to Semantic Scholar's academic paper database through their API.
 
 ## Features
