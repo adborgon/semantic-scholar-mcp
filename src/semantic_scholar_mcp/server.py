@@ -34,28 +34,17 @@ class SemanticScholarServer:
                         "properties": {
                             "query": {
                                 "type": "string",
-                                "description": """A plain-text search query string.
-
-- No special query syntax is supported
-- Hyphenated query terms yield no matches (replace it with space to find matches).""",
+                                "description": """A plain-text search query string.\n\n- No special query syntax is supported\n- Hyphenated query terms yield no matches (replace it with space to find matches).""",
                             },
                             "fields": {
                                 "type": "string",
-                                "description": """A comma-separated list of the fields to be returned. The paperId field is always returned. See the resource 'semantic-scholar://fields/paper' for available fields.
-
-Examples:
-- `title,url`
-- `title,embedding.specter_v2`
-- `title,authors,citations.title,citations.abstract`
+                                "description": """A comma-separated list of the fields to be returned. The paperId field is always returned. See the resource 'semantic-scholar://fields/paper' for available fields.\n\nExamples:\n- `title,url`\n- `title,embedding.specter_v2`\n- `title,authors,citations.title,citations.abstract`
                                 """,
                                 "default": self.search_paper_default_fields,
                             },
                             "publicationTypes": {
                                 "type": "string",
-                                "description": """A comma-separated list of publication types to include.
-
-Available types: Review, JournalArticle, CaseReort, ClinicalTrial, Conference, Dataset, Editorial, LettersAndComments, MetaAnalysis, News, Study, Book, BookSection
-Example: `Review,JournalArticle` will return papers with publication types Review and/or JournalArticle""",
+                                "description": """A comma-separated list of publication types to include.\n\nAvailable types: Review, JournalArticle, CaseReort, ClinicalTrial, Conference, Dataset, Editorial, LettersAndComments, MetaAnalysis, News, Study, Book, BookSection\nExample: `Review,JournalArticle` will return papers with publication types Review and/or JournalArticle""",
                             },
                             "openAccessPdf": {
                                 "type": "boolean",
@@ -69,50 +58,20 @@ Example: `Review,JournalArticle` will return papers with publication types Revie
                             },
                             "publicationDateOrYear": {
                                 "type": "string",
-                                "description": """Restricts results to the given range of publication dates or years (inclusive). Accepts the format `<startDate>:<endDate>` with each date in `YYYY-MM-DD` format.
-Each term is optional, allowing for specific dates, fixed ranges, or open-ended ranges. In addition, prefixes are suported as a shorthand, e.g. `2020-06` matches all dates in June 2020.
-Specific dates are not known for all papers, so some records returned with this filter will have a `null` value for publicationDate. `year`, however, will always be present. For records where a specific publication date is not known, they will be treated as if published on January 1st of their publication year.
-
-Examples:
-
-- `2019-03-05` on March 3rd, 2019
-- `2019-03` during March 2019
-- `2019` during 2019
-- `2016-03-05:2020-06-06` as early as March 5th, 2016 or as late as June 6th, 2020
-- `1981-08-25:` on or after August 25th, 1981
-- `:2015-01` before or on January 31st, 2015
-- `2015:2020` between January 1st, 2015 and December 31st, 2020
+                                "description": """Restricts results to the given range of publication dates or years (inclusive). Accepts the format `<startDate>:<endDate>` with each date in `YYYY-MM-DD` format.\nEach term is optional, allowing for specific dates, fixed ranges, or open-ended ranges. In addition, prefixes are suported as a shorthand, e.g. `2020-06` matches all dates in June 2020.\nSpecific dates are not known for all papers, so some records returned with this filter will have a `null` value for publicationDate. `year`, however, will always be present. For records where a specific publication date is not known, they will be treated as if published on January 1st of their publication year.\n\nExamples:\n\n- `2019-03-05` on March 3rd, 2019\n- `2019-03` during March 2019\n- `2019` during 2019\n- `2016-03-05:2020-06-06` as early as March 5th, 2016 or as late as June 6th, 2020\n- `1981-08-25:` on or after August 25th, 1981\n- `:2015-01` before or on January 31st, 2015\n- `2015:2020` between January 1st, 2015 and December 31st, 2020
 """,
                             },
                             "year": {
                                 "type": "string",
-                                "description": """Restricts results to the given publication year or range of years (inclusive).
-
-Examples:
-
-- `2019` in 2019
-- `2016-2020` as early as 2016 or as late as 2020
-- `2010-` during or after 2010
-- `-2015` before or during 2015""",
+                                "description": """Restricts results to the given publication year or range of years (inclusive).\n\nExamples:\n\n- `2019` in 2019\n- `2016-2020` as early as 2016 or as late as 2020\n- `2010-` during or after 2010\n- `-2015` before or during 2015""",
                             },
                             "venue": {
                                 "type": "string",
-                                "description": """Restricts results to papers published in the given venues, formatted as a comma-separated list.
-
-Input could also be an ISO4 abbreviation. Examples include:
-- Nature
-- New England Journal of Medicine
-- Radiology
-- N. Engl. J. Med.
-
-Example: `Nature,Radiology` will return papers from venues Nature and/or Radiology.""",
+                                "description": """Restricts results to papers published in the given venues, formatted as a comma-separated list.\n\nInput could also be an ISO4 abbreviation. Examples include:\n- Nature\n- New England Journal of Medicine\n- Radiology\n- N. Engl. J. Med.\n\nExample: `Nature,Radiology` will return papers from venues Nature and/or Radiology.""",
                             },
                             "fieldsOfStudy": {
                                 "type": "string",
-                                "description": """A Comma-separated list of fields of study to include.
-
-Available fields of study: Computer Science,Medicine,Chemistry,Biology,Materials Science,Physics,Geology,Psychology,Art,History,Geography,Sociology,Business,Political Science,Economics,Philosophy,Mathematics,Engineering,Environmental Science,Agricultural and Food Sciences,Education,Law,Linguistics
-Example: `Physics,Mathematics` will return papers with either Physics or Mathematics in their list of fields-of-study.""",
+                                "description": """A Comma-separated list of fields of study to include.\n\nAvailable fields of study: Computer Science,Medicine,Chemistry,Biology,Materials Science,Physics,Geology,Psychology,Art,History,Geography,Sociology,Business,Political Science,Economics,Philosophy,Mathematics,Engineering,Environmental Science,Agricultural and Food Sciences,Education,Law,Linguistics\nExample: `Physics,Mathematics` will return papers with either Physics or Mathematics in their list of fields-of-study.""",
                             },
                             "offset": {
                                 "type": "integer",
@@ -136,32 +95,11 @@ Example: `Physics,Mathematics` will return papers with either Physics or Mathema
                         "properties": {
                             "paper_id": {
                                 "type": "string",
-                                "description": """The following types of IDs are supported:
-- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`
-- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`
-- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`
-- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`
-- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`
-- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`
-- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`
-- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`
-- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`
-
-URLs are recognized from the following sites:
-- semanticscholar.org
-- arxiv.org
-- aclweb.org
-- acm.org
-- biorxiv.org""",
+                                "description": """The following types of IDs are supported:\n- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`\n- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`\n- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`\n- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`\n- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`\n- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`\n- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`\n- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`\n- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`\n\nURLs are recognized from the following sites:\n- semanticscholar.org\n- arxiv.org\n- aclweb.org\n- acm.org\n- biorxiv.org""",
                             },
                             "fields": {
                                 "type": "string",
-                                "description": """A comma-separated list of the fields to be returned. The paperId field is always returned. See the resource 'semantic-scholar://fields/paper' for available fields.
-
-Examples:
-- `title,url`
-- `title,embedding.specter_v2`
-- `title,authors,citations.title,citations.abstract`
+                                "description": """A comma-separated list of the fields to be returned. The paperId field is always returned. See the resource 'semantic-scholar://fields/paper' for available fields.\n\nExamples:\n- `title,url`\n- `title,embedding.specter_v2`\n- `title,authors,citations.title,citations.abstract`
                                 """,
                                 "default": self.get_paper_default_fields,
                             },
@@ -177,31 +115,11 @@ Examples:
                         "properties": {
                             "paper_id": {
                                 "type": "string",
-                                "description": """The following types of IDs are supported:
-- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`
-- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`
-- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`
-- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`
-- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`
-- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`
-- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`
-- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`
-- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`
-
-URLs are recognized from the following sites:
-- semanticscholar.org
-- arxiv.org
-- aclweb.org
-- acm.org
-- biorxiv.org""",
+                                "description": """The following types of IDs are supported:\n- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`\n- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`\n- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`\n- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`\n- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`\n- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`\n- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`\n- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`\n- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`\n\nURLs are recognized from the following sites:\n- semanticscholar.org\n- arxiv.org\n- aclweb.org\n- acm.org\n- biorxiv.org""",
                             },
                             "fields": {
                                 "type": "string",
-                                "description": """A comma-separated list of the fields to be returned. The authorId field is always returned. See the resource 'semantic-scholar://fields/author' for available fields.
-
-Examples:
-- `name,affiliations,papers`
-- `url,papers.year,papers.authors`
+                                "description": """A comma-separated list of the fields to be returned. The authorId field is always returned. See the resource 'semantic-scholar://fields/author' for available fields.\n\nExamples:\n- `name,affiliations,papers`\n- `url,papers.year,papers.authors`
                                 """,
                                 "default": "authorId,name,affiliations,citationCount,hIndex",
                             },
@@ -227,23 +145,7 @@ Examples:
                         "properties": {
                             "paper_id": {
                                 "type": "string",
-                                "description": """The following types of IDs are supported:
-- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`
-- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`
-- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`
-- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`
-- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`
-- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`
-- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`
-- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`
-- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`
-
-URLs are recognized from the following sites:
-- semanticscholar.org
-- arxiv.org
-- aclweb.org
-- acm.org
-- biorxiv.org""",
+                                "description": """The following types of IDs are supported:\n- `<sha>` - a Semantic Scholar ID, e.g. `649def34f8be52c8b66281af98ae884c09aef38b`\n- `CorpusId:<id>` - a Semantic Scholar numerical ID, e.g. `CorpusId:215416146`\n- `DOI:<doi>` - a Digital Object Identifier, e.g. `DOI:10.18653/v1/N18-3011`\n- `ARXIV:<id>` - arXiv.rg, e.g. `ARXIV:2106.15928`\n- `MAG:<id>` - Microsoft Academic Graph, e.g. `MAG:112218234`\n- `ACL:<id>` - Association for Computational Linguistics, e.g. `ACL:W12-3903`\n- `PMID:<id>` - PubMed/Medline, e.g. `PMID:19872477`\n- `PMCID:<id>` - PubMed Central, e.g. `PMCID:2323736`\n- `URL:<url>` - URL from one of the sites listed below, e.g. `URL:https://arxiv.org/abs/2106.15928v1`\n\nURLs are recognized from the following sites:\n- semanticscholar.org\n- arxiv.org\n- aclweb.org\n- acm.org\n- biorxiv.org""",
                             },
                             "format": {
                                 "type": "string",
@@ -289,57 +191,11 @@ URLs are recognized from the following sites:
 
     def _get_paper_fields_documentation(self) -> str:
         """Get paper fields documentation."""
-        return """# Paper Fields Reference
-
-## Basic Fields
-- `paperId` - Unique paper identifier
-- `title` - Paper title
-- `abstract` - Paper abstract
-- `year` - Publication year
-- `publicationDate` - Full publication date (YYYY-MM-DD)
-
-## Author Information
-- `authors` - List of authors (returns authorId and name by default)
-- `authors.authorId` - Author's unique identifier
-- `authors.name` - Author's name
-- `authors.affiliations` - Author's institutional affiliations
-- `authors.citationCount` - Author's total citation count
-- `authors.hIndex` - Author's h-index
-
-## Citation and Reference Data
-- `citationCount` - Number of times this paper has been cited
-- `referenceCount` - Number of references in this paper
-- `citations` - List of papers that cite this paper
-- `references` - List of papers referenced by this paper
-
-## Publication Details
-- `journal` - Journal information (name, volume, pages, etc.)
-- `venue` - Publication venue
-- `publicationTypes` - Types of publication (e.g., JournalArticle, Conference)
-- `fieldsOfStudy` - Academic fields (e.g., Computer Science, Medicine)
-- `s2FieldsOfStudy` - Semantic Scholar's field classifications
-
-## Additional Metadata
-- `doi` - Digital Object Identifier
-- `arxivId` - ArXiv identifier
-- `url` - Paper URL
-- `openAccessPdf` - Open access PDF information
-- `embedding` - Paper embedding vectors (for similarity analysis)
-"""
+        return """# Paper Fields Reference\n\n## Basic Fields\n- `paperId` - Unique paper identifier\n- `title` - Paper title\n- `abstract` - Paper abstract\n- `year` - Publication year\n- `publicationDate` - Full publication date (YYYY-MM-DD)\n\n## Author Information\n- `authors` - List of authors (returns authorId and name by default)\n- `authors.authorId` - Author's unique identifier\n- `authors.name` - Author's name\n- `authors.affiliations` - Author's institutional affiliations\n- `authors.citationCount` - Author's total citation count\n- `authors.hIndex` - Author's h-index\n\n## Citation and Reference Data\n- `citationCount` - Number of times this paper has been cited\n- `referenceCount` - Number of references in this paper\n- `citations` - List of papers that cite this paper\n- `references` - List of papers referenced by this paper\n\n## Publication Details\n- `journal` - Journal information (name, volume, pages, etc.)\n- `venue` - Publication venue\n- `publicationTypes` - Types of publication (e.g., JournalArticle, Conference)\n- `fieldsOfStudy` - Academic fields (e.g., Computer Science, Medicine)\n- `s2FieldsOfStudy` - Semantic Scholar's field classifications\n\n## Additional Metadata\n- `doi` - Digital Object Identifier\n- `arxivId` - ArXiv identifier\n- `url` - Paper URL\n- `openAccessPdf` - Open access PDF information\n- `embedding` - Paper embedding vectors (for similarity analysis)\n"""
 
     def _get_author_fields_documentation(self) -> str:
         """Get author fields documentation."""
-        return """# Author Fields Reference
-
-## Available Fields
-- `authorId` - Unique author identifier
-- `name` - Author's name
-- `affiliations` - Institutional affiliations (array)
-- `citationCount` - Total citation count across all papers
-- `hIndex` - h-index metric
-- `paperCount` - Number of papers published
-- `url` - Author's Semantic Scholar profile URL
-"""
+        return """# Author Fields Reference\n\n## Available Fields\n- `authorId` - Unique author identifier\n- `name` - Author's name\n- `affiliations` - Institutional affiliations (array)\n- `citationCount` - Total citation count across all papers\n- `hIndex` - h-index metric\n- `paperCount` - Number of papers published\n- `url` - Author's Semantic Scholar profile URL\n"""
 
     def _setup_handlers(self) -> None:
         """Setup tool call handlers."""
@@ -484,7 +340,7 @@ URLs are recognized from the following sites:
 
             res = response.json()
 
-            return [TextContent(type="text", text=res)]
+            return [TextContent(type="text", text=str(res))]
         except Exception as e:
             return [TextContent(type="text", text=f"Error getting authors: {str(e)}")]
 
@@ -499,7 +355,7 @@ URLs are recognized from the following sites:
             response = await asyncio.to_thread(
                 requests.get,
                 f"{self.base_url}/paper/{paper_id}",
-                params={"fields": "citationStyles, abstract"},
+                params={"fields": "citationStyles"},
                 headers=self._get_headers(),
                 timeout=30,
             )
@@ -516,22 +372,27 @@ URLs are recognized from the following sites:
 
             data = response.json()
 
-            if "citationStyles" not in data:
+            citation_styles = data.get("citationStyles") or {}
+            available_formats = {
+                str(key).lower(): value for key, value in citation_styles.items()
+            }
+
+            if not available_formats:
                 return [
                     TextContent(
                         type="text", text="No citation styles available for this paper."
                     )
                 ]
-            if citation_format not in data["citationStyles"]:
+            if citation_format not in available_formats:
                 return [
                     TextContent(
                         type="text",
-                        text=f"Citation format '{citation_format}' not available. Available formats for this paper: {', '.join(data['citationStyles'].keys())}",
+                        text=f"Citation format '{citation_format}' not available. Available formats for this paper: {', '.join(sorted(available_formats))}",
                     )
                 ]
 
-            citation = data["citationStyles"][citation_format]
-            abstract = data.get("abstract", "")
+            citation = available_formats[citation_format]
+            abstract = await self._fetch_abstract(paper_id)
 
             result_text = add_abstract(citation, abstract, citation_format)
             return [TextContent(type="text", text=result_text)]
@@ -540,6 +401,46 @@ URLs are recognized from the following sites:
                 TextContent(type="text", text=f"Error generating citation: {str(e)}")
             ]
 
+    async def _fetch_abstract(self, paper_id: str) -> str:
+        """Fetch the paper abstract in a separate request.
+
+        The Semantic Scholar API rejects `abstract` when it is requested
+        together with `citationStyles`, so the abstract must be fetched in
+        its own request. Returns an empty string if the request fails so
+        that the citation is still returned without the abstract.
+        """
+        try:
+            response = await asyncio.to_thread(
+                requests.get,
+                f"{self.base_url}/paper/{paper_id}",
+                params={"fields": "abstract"},
+                headers=self._get_headers(),
+                timeout=30,
+            )
+            if response.status_code != 200:
+                return ""
+            return response.json().get("abstract") or ""
+        except Exception:
+            return ""
+
 
 def add_abstract(citation: str, abstract: str, citation_format: str) -> str:
-    return "TODO"
+    """Attach the paper abstract to a formatted citation.
+
+    - BibTeX: inserts an ``abstract = {...}`` field inside the entry.
+    - APA/MLA/Chicago: appends the abstract after the citation text.
+    """
+    if not abstract:
+        return citation
+
+    if citation_format == "bibtex":
+        stripped = citation.rstrip()
+        closing_index = stripped.rfind("}")
+        if closing_index == -1:
+            return stripped
+        body = stripped[:closing_index].rstrip()
+        if not body.endswith(","):
+            body += ","
+        return f"{body}\n  abstract = {{{abstract}}}\n{stripped[closing_index:]}"
+
+    return f"{citation.rstrip()}\n\nAbstract: {abstract}"

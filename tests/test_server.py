@@ -184,6 +184,11 @@ class TestToolHandlers:
 
             assert len(result) == 1
             assert isinstance(result[0], TextContent)
+            # The response dict must be serialized to text, not returned raw
+            # (a raw dict raises a Pydantic ValidationError inside the try
+            # block, which is swallowed and returned as an error message).
+            assert "John Doe" in str(result[0].text)
+            assert "Error getting authors" not in str(result[0].text)
 
     @pytest.mark.anyio
     async def test_handle_get_citation_success(
@@ -207,6 +212,8 @@ class TestToolHandlers:
 
             assert len(result) == 1
             assert isinstance(result[0], TextContent)
+            assert "@article" in str(result[0].text)
+            assert "Error generating citation" not in str(result[0].text)
 
     @pytest.mark.anyio
     async def test_handle_get_citation_format_not_available(
@@ -235,6 +242,52 @@ class TestToolHandlers:
             assert len(result) == 1
             assert "Citation format 'apa' not available" in result[0].text
 
+    @pytest.mark.anyio
+    async def test_handle_get_citation_separate_abstract_request(
+        self, server_without_api_key: SemanticScholarServer
+    ):
+        """Test that citation and abstract are fetched in separate requests.
+
+        The Semantic Scholar API rejects `abstract` when requested together
+        with `citationStyles`, so the handler must issue two requests and
+        normalize style keys (e.g. 'APA' -> 'apa').
+        """
+        citation_response = {
+            "paperId": "649def34f8be52c8b66281af98ae884c09aef38b",
+            "citationStyles": {
+                "APA": "Doe, J. (2023). Sample Paper Title."
+            },  # API may return capitalized keys
+        }
+        abstract_response = {
+            "abstract": "This is a standalone abstract fetched separately."
+        }
+
+        with patch("asyncio.to_thread") as mock_to_thread:
+            citation_mock = MagicMock()
+            citation_mock.status_code = 200
+            citation_mock.json.return_value = citation_response
+
+            abstract_mock = MagicMock()
+            abstract_mock.status_code = 200
+            abstract_mock.json.return_value = abstract_response
+
+            mock_to_thread.side_effect = [citation_mock, abstract_mock]
+
+            args = {
+                "paper_id": "649def34f8be52c8b66281af98ae884c09aef38b",
+                "format": "apa",
+            }
+            result = await server_without_api_key._handle_get_citation(args)
+
+            assert len(result) == 1
+            assert isinstance(result[0], TextContent)
+            assert mock_to_thread.call_count == 2
+            # The abstract is appended to the citation text
+            assert result[0].text == (
+                "Doe, J. (2023). Sample Paper Title.\n\n"
+                "Abstract: This is a standalone abstract fetched separately."
+            )
+
     def test_server_configuration(self, server_without_api_key: SemanticScholarServer):
         """Test basic server configuration."""
         # Test that server is properly configured
@@ -253,11 +306,26 @@ class TestToolHandlers:
 class TestUtilityFunctions:
     """Test cases for utility functions."""
 
-    def test_add_abstract(self):
-        """Test add_abstract function."""
-        citation = "@article{doe2023sample, title={Sample}, author={Doe}}"
+    def test_add_abstract_bibtex(self):
+        """Test that add_abstract inserts the abstract field into BibTeX."""
+        citation = "@article{doe2023sample,\n  title = {Sample}\n}"
         abstract = "This is a sample abstract."
         result = add_abstract(citation, abstract, "bibtex")
 
-        # Currently returns "TODO" - this should be implemented
-        assert result == "TODO"
+        assert "abstract = {This is a sample abstract.}" in result
+        assert result.strip().endswith("}")
+        assert result.index("abstract = {") < result.rfind("}")
+
+    def test_add_abstract_apa(self):
+        """Test that add_abstract appends the abstract to APA citations."""
+        citation = "Doe, J. (2023). Sample Paper Title."
+        abstract = "This is a sample abstract."
+        result = add_abstract(citation, abstract, "apa")
+
+        assert result == "Doe, J. (2023). Sample Paper Title.\n\nAbstract: This is a sample abstract."
+
+    def test_add_abstract_empty(self):
+        """Test that add_abstract returns the citation unchanged if empty."""
+        citation = "@article{doe2023sample, title = {Sample}}"
+        assert add_abstract(citation, "", "bibtex") == citation
+        assert add_abstract(citation, "", "apa") == citation
