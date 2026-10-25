@@ -59,28 +59,32 @@ def serve(
     - stdio: Standard MCP communication via stdin/stdout
     - http: HTTP server with Streamable HTTP for web-based clients
     """
+    # All human-readable output MUST go to stderr: stdout is the MCP
+    # JSON-RPC channel in stdio mode and any extra text corrupts the
+    # protocol (the client sees non-JSON lines and closes the session).
     if debug:
-        click.echo("Debug mode enabled")
+        click.echo("Debug mode enabled", err=True)
 
     if api_key:
-        click.echo("✓ Semantic Scholar API key configured")
+        click.echo("✓ Semantic Scholar API key configured", err=True)
     else:
         click.echo(
-            "⚠️  No Semantic Scholar API key found (set SEMANTIC_SCHOLAR_API_KEY environment variable for higher rate limits)"
+            "⚠️  No Semantic Scholar API key found (set SEMANTIC_SCHOLAR_API_KEY environment variable for higher rate limits)",
+            err=True,
         )
 
     server_instance = SemanticScholarServer(api_key=api_key)
 
-    click.echo("\nAvailable tools:")
-    click.echo("  • search_paper - Search for papers using Semantic Scholar")
-    click.echo("  • get_paper - Get detailed information about a specific paper")
-    click.echo("  • get_authors - Get authors information for a specific paper")
-    click.echo("  • get_citation - Get citation information in various formats")
+    click.echo("\nAvailable tools:", err=True)
+    click.echo("  • search_paper - Search for papers using Semantic Scholar", err=True)
+    click.echo("  • get_paper - Get detailed information about a specific paper", err=True)
+    click.echo("  • get_authors - Get authors information for a specific paper", err=True)
+    click.echo("  • get_citation - Get citation information in various formats", err=True)
 
     if transport == "http":
-        click.echo(f"\nStarting HTTP server on http://{host}:{port}")
-        click.echo("Available endpoints:")
-        click.echo(f"  • HTTP  http://{host}:{port}/mcp - MCP over HTTP endpoint")
+        click.echo(f"\nStarting HTTP server on http://{host}:{port}", err=True)
+        click.echo("Available endpoints:", err=True)
+        click.echo(f"  • HTTP  http://{host}:{port}/mcp - MCP over HTTP endpoint", err=True)
 
         session_manager = StreamableHTTPSessionManager(
             app=server_instance.server,
@@ -101,9 +105,9 @@ def serve(
 
         uvicorn.run(starlette_app, host=host, port=port)
     else:  # stdio
-        click.echo("\nStarting Semantic Scholar MCP Server...")
-        click.echo("Server will communicate via stdio (MCP standard)")
-        click.echo("Server ready. Waiting for MCP client connection...")
+        click.echo("\nStarting Semantic Scholar MCP Server...", err=True)
+        click.echo("Server will communicate via stdio (MCP standard)", err=True)
+        click.echo("Server ready. Waiting for MCP client connection...", err=True)
 
         async def async_main() -> None:
             async with stdio_server() as (read_stream, write_stream):
@@ -298,7 +302,7 @@ def list_tools(output_format: str, verbose: bool) -> None:
                     "usage": "Generate BibTeX citation for the paper",
                 },
                 {
-                    "description": "Get APA citation",
+                    "description": "Generate APA citation",
                     "input": {
                         "paper_id": "649def34f8be52c8b66281af98ae884c09aef38b",
                         "format": "apa",
@@ -352,7 +356,7 @@ def list_tools(output_format: str, verbose: bool) -> None:
                 if "examples" in tool:
                     click.echo("   💡 Usage Examples:")
                     for i, example in enumerate(tool["examples"], 1):
-                        click.echo(f"     {i}. {example['description']}")
+                        click.echo(f"        {i}. {example['description']}")
                         click.echo(f"        Input: {example['input']}")
                         click.echo(f"        Usage: {example['usage']}")
                         if i < len(tool["examples"]):
@@ -378,6 +382,7 @@ def list_tools(output_format: str, verbose: bool) -> None:
                         required_mark = (
                             " (required)" if param_name in required else " (optional)"
                         )
+                        param_type = param_info.get("type", "unknown")
                         param_desc = param_info.get("description", "No description")
                         default = param_info.get("default")
                         default_text = (
