@@ -8,6 +8,16 @@ from mcp.server import Server
 from mcp.types import Resource, TextContent, Tool
 
 
+# Shown in every tool description so that agents that read tool schemas
+# schedule their calls respecting the strict API rate limit.
+RATE_LIMIT_WARNING = (
+    "IMPORTANT: the Semantic Scholar API enforces a strict rate limit of "
+    "about 1 request per second even with an API key. Wait at least 1 "
+    "second between consecutive tool calls; on HTTP 429 wait 15-20 seconds "
+    "and retry."
+)
+
+
 class SemanticScholarServer:
     """MCP server for Semantic Scholar operations."""
 
@@ -28,7 +38,8 @@ class SemanticScholarServer:
             return [
                 Tool(
                     name="search_paper",
-                    description="Search for papers using Semantic Scholar. Use 'fields' parameter to customize returned data",
+                    description="Search for papers using Semantic Scholar. Use 'fields' parameter to customize returned data. "
+                    + RATE_LIMIT_WARNING,
                     inputSchema={
                         "type": "object",
                         "properties": {
@@ -89,7 +100,8 @@ class SemanticScholarServer:
                 ),
                 Tool(
                     name="get_paper",
-                    description="Get detailed information about a specific paper. Use 'fields' parameter to customize returned data.",
+                    description="Get detailed information about a specific paper. Use 'fields' parameter to customize returned data. "
+                    + RATE_LIMIT_WARNING,
                     inputSchema={
                         "type": "object",
                         "properties": {
@@ -109,7 +121,8 @@ class SemanticScholarServer:
                 ),
                 Tool(
                     name="get_authors",
-                    description="Get authors information for a specific paper. Use 'fields' parameter to customize author data returned.",
+                    description="Get authors information for a specific paper. Use 'fields' parameter to customize author data returned. "
+                    + RATE_LIMIT_WARNING,
                     inputSchema={
                         "type": "object",
                         "properties": {
@@ -139,7 +152,7 @@ class SemanticScholarServer:
                 ),
                 Tool(
                     name="get_citation",
-                    description="Get citation information in various formats.",
+                    description="Get citation information in various formats. " + RATE_LIMIT_WARNING,
                     inputSchema={
                         "type": "object",
                         "properties": {
