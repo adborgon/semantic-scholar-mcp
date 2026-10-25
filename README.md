@@ -5,6 +5,18 @@
 
 A Model Context Protocol (MCP) server that provides access to Semantic Scholar's academic paper database through their API.
 
+## ⚠️ Strict Rate Limit (read before use)
+
+The Semantic Scholar API enforces its rate limits **very strictly, even with an API key**. When using the tools (or the CLI) programmatically:
+
+- Wait **at least 1 second between consecutive calls** (e.g. `sleep(1)` or a scheduling step between tool invocations).
+- If you receive **HTTP 429 ("Too Many Requests")**, wait **15–20 seconds** and retry; the block is temporary, not permanent.
+- Calls that fail after reaching the API (e.g. a tool that returns an internal error) **still count against the limit**.
+- The MCP tool descriptions include this warning, so agents that read tool schemas will see it before calling.
+
+Without the delay, bursts of calls quickly trigger HTTP 429 and the server returns
+`Error: API returned status 429: ...`. That is expected behavior, not a bug.
+
 ## Features
 
 - **Paper Search**: Search for academic papers with filters for year, fields of study, and open access
@@ -70,6 +82,7 @@ Or manually add it to your .mcp.json configuration file:
    - Required: `paper_id`
    - Optional: `format` (bibtex, apa, mla, chicago)
 
+> **Rate limit reminder:** keep at least 1 second between any two consecutive tool calls (see [Strict Rate Limit](#strict-rate-limit-read-before-use)).
 
 ## CLI Examples
 
@@ -138,8 +151,8 @@ All tools support a `fields` parameter to customize the returned data. This allo
 
 - `authorId` - Unique author identifier
 - `name` - Author's name
-- `affiliations` - Institutional affiliations
-- `citationCount` - Total citation count
+- `affiliations` - Institutional affiliations (array)
+- `citationCount` - Total citation count across all papers
 - `hIndex` - h-index metric
 - `paperCount` - Number of papers published
 - `url` - Author's profile URL
@@ -192,6 +205,8 @@ semantic-scholar-mcp/
 
 - Without API key: 100 requests per 5 minutes
 - With API key: 1 request per second (higher limits available on request)
+
+**The ~1 request/second limit is enforced strictly.** Keep at least 1 second between consecutive calls and retry after 15–20 seconds on HTTP 429 (see [Strict Rate Limit](#strict-rate-limit-read-before-use)).
 
 ## Supported Paper ID Types
 
